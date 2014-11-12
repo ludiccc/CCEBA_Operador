@@ -2,3 +2,37 @@
 <DESTIP>127.0.0.1</DESTIP>
 <DESTPORT>12346</DESTPORT>
 <ANIMACION>1</ANIMACION>
+<CAMARAS>
+    <CAMARA0>
+        <IP>127.0.0.1</IP>
+        <PORT>12346</PORT>
+        <X>0</X>
+        <Y>0</Y>
+        <ANGULOINICIAL>5</ANGULOINICIAL>
+        <ANGULOFINAL>85</ANGULOFINAL>
+    </CAMARA0>
+    <CAMARA1>
+        <IP>192.168.1.140</IP>
+        <PORT>12346</PORT>
+        <X>400</X>
+        <Y>0</Y>
+        <ANGULOINICIAL>95</ANGULOINICIAL>
+        <ANGULOFINAL>170</ANGULOFINAL>
+    </CAMARA1>
+    <CAMARA2>
+        <IP>192.168.1.141</IP>
+        <PORT>12346</PORT>
+        <X>0</X>
+        <Y>300</Y>
+        <ANGULOINICIAL>280</ANGULOINICIAL>
+        <ANGULOFINAL>340</ANGULOFINAL>
+    </CAMARA2>
+    <CAMARA3>
+        <IP>192.168.1.141</IP>
+        <PORT>12346</PORT>
+        <X>400</X>
+        <Y>300</Y>
+        <ANGULOINICIAL>190</ANGULOINICIAL>
+        <ANGULOFINAL>250</ANGULOFINAL>
+    </CAMARA3>
+</CAMARAS>

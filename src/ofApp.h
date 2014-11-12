@@ -3,6 +3,9 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "ofxXmlSettings.h"
+#include "camara.h"
+#include <math.h>       /* atan2 */
+
 
 // listen on port 12345
 
@@ -32,12 +35,10 @@ class ofApp : public ofBaseApp {
     string destIP;
     int destPort;
     
+    Camara camaras[4];
     
     ofxXmlSettings XML;
     
-    
-    ofxOscSender testSender;
-
 		int current_msg_string;
 		string msg_strings[NUM_MSG_STRINGS];
 		float timers[NUM_MSG_STRINGS];
@@ -46,6 +47,8 @@ class ofApp : public ofBaseApp {
 		string mouseButtonState;
     
         ofImage receivedImage;
+    
+    ofRectangle areaDeClick;
     
         
 };

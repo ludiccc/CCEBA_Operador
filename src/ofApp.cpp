@@ -4,7 +4,7 @@
 void ofApp::setup(){
     
     if( XML.loadFile("control.xml") ){
-        cout << "mySettings.xml loaded!";
+        cout << "control.xml loaded!";
     }else{
         cout << "unable to load mySettings.xml check data/ folder";
     }
@@ -14,13 +14,43 @@ void ofApp::setup(){
     destIP = XML.getValue("DESTIP", "localhost");
     destPort = XML.getValue("DESTPORT", 12345);
     
+    camaras[0].setup(XML.getValue("CAMARAS:CAMARA0:IP", "127.0.0.1"),
+                     XML.getValue("CAMARAS:CAMARA0:PORT", 12346),
+                     XML.getValue("CAMARAS:CAMARA0:X", 0),
+                    XML.getValue("CAMARAS:CAMARA0:Y", 0),
+                    XML.getValue("CAMARAS:CAMARA0:ANGULOINICIAL", 0),
+                    XML.getValue("CAMARAS:CAMARA0:ANGULOFINAL", 0)
+                     );
+
+    camaras[1].setup(XML.getValue("CAMARAS:CAMARA1:IP", "127.0.0.1"),
+                     XML.getValue("CAMARAS:CAMARA1:PORT", 12346),
+                     XML.getValue("CAMARAS:CAMARA1:X", 0),
+                     XML.getValue("CAMARAS:CAMARA1:Y", 0),
+                     XML.getValue("CAMARAS:CAMARA1:ANGULOINICIAL", 0),
+                     XML.getValue("CAMARAS:CAMARA1:ANGULOFINAL", 0)
+                     );
     
+    camaras[2].setup(XML.getValue("CAMARAS:CAMARA2:IP", "127.0.0.1"),
+                     XML.getValue("CAMARAS:CAMARA2:PORT", 12346),
+                     XML.getValue("CAMARAS:CAMARA2:X", 0),
+                     XML.getValue("CAMARAS:CAMARA2:Y", 0),
+                     XML.getValue("CAMARAS:CAMARA2:ANGULOINICIAL", 0),
+                     XML.getValue("CAMARAS:CAMARA2:ANGULOFINAL", 0)
+                     );
     
+    camaras[3].setup(XML.getValue("CAMARAS:CAMARA3:IP", "127.0.0.1"),
+                     XML.getValue("CAMARAS:CAMARA3:PORT", 12346),
+                     XML.getValue("CAMARAS:CAMARA3:X", 0),
+                     XML.getValue("CAMARAS:CAMARA3:Y", 0),
+                     XML.getValue("CAMARAS:CAMARA3:ANGULOINICIAL", 0),
+                     XML.getValue("CAMARAS:CAMARA3:ANGULOFINAL", 0)
+                     );
+    
+
 	// listen on the given port
 	cout << "listening for osc messages on port " << port << "\n";
 	receiver.setup(port);
     
-    testSender.setup(destIP,destPort);
 
 	current_msg_string = 0;
 	mouseX = 0;
@@ -29,7 +59,7 @@ void ofApp::setup(){
 
 	ofBackground(30, 30, 130);
     
-
+    areaDeClick.set(400,300,400,300);
 }
 
 //--------------------------------------------------------------
@@ -123,28 +153,38 @@ void ofApp::draw(){
 		ofDrawBitmapString(msg_strings[i], 10, 40 + 15 * i);
 	}
 
-
+    ofSetColor(128,128,128);
+    ofRect(areaDeClick);
+    for (int i = 0; i < 4; i++) {
+        ofSetColor(255, 128, 0);
+        int tmpX = camaras[i].x+areaDeClick.x;
+        int tmpY = camaras[i].y+areaDeClick.y;
+        ofRect(tmpX, tmpY, 10, 10);
+        
+        ofSetColor(255,0,0);
+        // aqu’ habr’a que dibujar el ‡ngulo de visi—n...
+        ofLine(tmpX, tmpY, tmpX + cos(ofDegToRad(camaras[i].anguloInicial))*100, tmpY + sin(ofDegToRad(camaras[i].anguloInicial))*100);
+        ofSetColor(255,0,255);
+        // aqu’ habr’a que dibujar el ‡ngulo de visi—n...
+        ofLine(tmpX, tmpY, tmpX + cos(ofDegToRad(camaras[i].anguloFinal))*100, tmpY + sin(ofDegToRad(camaras[i].anguloFinal))*100);
+    }
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == '1') {
-        ofxOscMessage m;
-        m.setAddress("/motor/position");
-        m.addIntArg(100);
-        testSender.sendMessage(m);
-        testSender.sendMessage(m);
+        for (int i = 0; i < 4; i++) {
+            camaras[i].setPosicion(0);
+        }
     } else if (key == '2') {
-        ofxOscMessage m;
-        m.setAddress("/motor/position");
-        m.addIntArg(200);
-        testSender.sendMessage(m);
+        for (int i = 0; i < 4; i++) {
+            camaras[i].setPosicion(100);
+        }
     } else if (key == '3') {
-        ofxOscMessage m;
-        m.setAddress("/motor/position");
-        m.addIntArg(0);
-        testSender.sendMessage(m);
+        for (int i = 0; i < 4; i++) {
+            camaras[i].setPosicion(50);
+        }
     }
 
 }
@@ -165,6 +205,18 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    
+    if (areaDeClick.inside(x,y)) {
+        // entonces le tengo que decir a cada motor que se mueva en una direcci—n en particular.
+        for (int i = 0; i < 4; i++) {
+            if (x-camaras[i].x == 0) continue; // me evito el problema de dominio
+            int angulo = ofRadToDeg(atan2(y-camaras[i].y,x-camaras[i].x));
+            
+            int valorDestino = ofMap(angulo, camaras[i].anguloInicial, camaras[i].anguloFinal, 0, 100);
+            camaras[i].setPosicion(valorDestino);
+        }
+
+    }
 }
 
 //--------------------------------------------------------------
