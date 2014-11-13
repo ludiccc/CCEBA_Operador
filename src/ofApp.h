@@ -5,6 +5,7 @@
 #include "ofxXmlSettings.h"
 #include "camara.h"
 #include "Sonido.h"
+#include "ofxCvHaarFinder.h"
 #include <math.h>       /* atan2 */
 
 
@@ -44,6 +45,15 @@ class ofApp : public ofBaseApp {
     int destPort;
 
     Camara camaras[4];
+    
+    ofVideoGrabber video;
+    
+    ofxCvGrayscaleImage grayImage;
+    ofxCvHaarFinder finder;
+    vector <ofImage> operadoresDetectados;
+    
+    
+    bool lastFrameFoundCara;
 
 
     //---------VARIABLES PARA DETECTAR LA "TENSION" DEL LUGAR Y MODIFICAR EL SONIDO---------
@@ -75,7 +85,7 @@ class ofApp : public ofBaseApp {
 		int mouseX, mouseY;
 		string mouseButtonState;
 
-        ofImage receivedImage;
+        
 
     ofRectangle areaDeClick;
 

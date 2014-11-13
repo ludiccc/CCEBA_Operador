@@ -8,9 +8,7 @@ class Sonido
     public:
         float pitch;
         //objeto sonido
-        ofSoundPlayer base;
 
-        void setup();
         void actualizar();
         void cambiarPitch(int nuevo,int viejo);
 
@@ -18,6 +16,7 @@ class Sonido
         virtual ~Sonido();
     protected:
     private:
+        ofSoundPlayer base;
 };
 
 #endif // SONIDO_H

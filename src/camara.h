@@ -23,7 +23,9 @@ public:
     int anguloInicial, anguloFinal;
     string IP;
     int port;
+    int ultimaPosicion;
     
+    ofImage receivedImage;
     
     ofxOscSender camaraRemota;
 };

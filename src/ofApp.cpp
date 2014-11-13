@@ -59,13 +59,21 @@ void ofApp::setup(){
 
 	ofBackground(30, 30, 130);
 
-	sonido.setup();
 	estadoOperador = STANDBY;
 
 	rangoTiempo = 1000;
 
 
-    areaDeClick.set(400,300,400,300);
+    areaDeClick.set(600,400,400,300);
+    finder.setup("haarcascade_frontalface_default.xml");
+
+    int camWidth 		= 640;	// try to grab at this size.
+    int camHeight 		= 480;
+    
+    video.setVerbose(true);
+    video.initGrabber(camWidth,camHeight);
+    lastFrameFoundCara = false;
+
 }
 
 //--------------------------------------------------------------
@@ -120,7 +128,7 @@ void ofApp::update(){
         }
         gradoAnterior=gradoTension;
     }
-    cout <<"contador: "<<contadorTiempo<<"\n";
+    //cout <<"contador: "<<contadorTiempo<<"\n";
     //------------------------------------------------------
 
 
@@ -151,8 +159,16 @@ void ofApp::update(){
 		}
         // check for an image being sent (note: the size of the image depends greatly on your network buffer sizes - if an image is too big the message won't come through )
         else if(m.getAddress() == "/image" ){
+            //cout << "recibida una imagen de " << m.getRemoteIp() << "\n";
             ofBuffer buffer = m.getArgAsBlob(0);
-            receivedImage.loadImage(buffer);
+            for (int i = 0; i < 4; i++) {
+                if (m.getRemoteIp() == camaras[i].IP) {
+                    camaras[i].receivedImage.loadImage(buffer);
+                    break;
+                }
+                
+            }
+            //receivedImage.loadImage(buffer);
         }
 		else{
 			// unrecognized message: display on the bottom of the screen
@@ -186,6 +202,43 @@ void ofApp::update(){
 		}
 
 	}
+    
+    video.update();
+    if (video.isFrameNew()){
+        
+        ofxCvColorImage colorImg;
+        colorImg.allocate(video.width,video.height);
+        colorImg.setFromPixels(video.getPixelsRef());
+        grayImage = colorImg;
+        /*
+         int totalPixels = camWidth*camHeight*3;
+         unsigned char * pixels = vidGrabber.getPixels();
+         unsigned char * pixelsDest = img.getPixels();
+         for (int i = 0; i < totalPixels; i++){
+         pixelsDest[i] = pixels[i];
+         }*/
+        finder.findHaarObjects(grayImage, 80, 80);
+        
+        if (lastFrameFoundCara && finder.blobs.size() == 0) {
+            lastFrameFoundCara = false;
+        }
+        if (!lastFrameFoundCara) {
+            for (int i = 0; i < finder.blobs.size(); i++) {
+                lastFrameFoundCara = true;
+                ofRectangle cur = finder.blobs[i].boundingRect;
+                if (operadoresDetectados.size() >= 10) {
+                    operadoresDetectados.erase(operadoresDetectados.begin());
+                }
+                
+                ofImage cara;
+                
+                cara.setFromPixels(video.getPixelsRef());
+                cara.crop(cur.x, cur.y, cur.width, cur.height);
+                
+                operadoresDetectados.push_back(cara);
+            }
+        }
+    }
 }
 
 
@@ -195,13 +248,15 @@ void ofApp::draw(){
 	string buf;
 	buf = "listening for osc messages on port:" + ofToString(port);
 	ofDrawBitmapString(buf, 10, 20);
-
-    buf = "Remote machine is:" + destIP;
-    ofDrawBitmapString(buf, 10, 50);
-
-    if(receivedImage.getWidth() > 0){
-        ofDrawBitmapString("Image:", 10, 160);
-        receivedImage.draw(10, 180);
+    
+    for (int i = 0; i < 4; i++) {
+        ofSetColor(128,128,128);
+        ofRect(10+(i%2)*170, 60+(i/2)*150,160,120);
+        ofDrawBitmapString("IP:"+camaras[i].IP,10+(i%2)*170, 50+(i/2)*150);
+        if(camaras[i].receivedImage.getWidth() > 0){
+            ofDrawBitmapString("Image:", 10, 160);
+            camaras[i].receivedImage.draw(10+(i%2)*170, 60+(i/2)*150);
+        }
     }
 
 	// draw mouse state
@@ -230,7 +285,9 @@ void ofApp::draw(){
         // aqu’ habr’a que dibujar el ‡ngulo de visi—n...
         ofLine(tmpX, tmpY, tmpX + cos(ofDegToRad(camaras[i].anguloFinal))*100, tmpY + sin(ofDegToRad(camaras[i].anguloFinal))*100);
     }
-
+    for (int i = 0; i < operadoresDetectados.size(); i++) {
+        operadoresDetectados[i].draw(10+(i%5)*45, 500+(i/5)*45, 50, 50);
+    }
 }
 
 //--------------------------------------------------------------
@@ -274,18 +331,23 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
 
-    if (areaDeClick.inside(x,y)) {
-        // entonces le tengo que decir a cada motor que se mueva en una direcci—n en particular.
-        for (int i = 0; i < 4; i++) {
-            if (x-camaras[i].x == 0) continue; // me evito el problema de dominio
-            int angulo = ofRadToDeg(atan2(y-camaras[i].y,x-camaras[i].x));
+    // entonces le tengo que decir a cada motor que se mueva en una direcci—n en particular.
+    for (int i = 0; i < 4; i++) {
+        /*
+        if (x-camaras[i].x == 0) continue; // me evito el problema de dominio
+        int angulo = ofRadToDeg(atan2(y-camaras[i].y,x-camaras[i].x))+camaras[i].anguloInicial;
+        
 
-            int valorDestino = ofMap(angulo, camaras[i].anguloInicial, camaras[i].anguloFinal, 0, 100);
-            camaras[i].setPosicion(valorDestino);
-            cantClicks++;
-        }
+        int valorDestino = ofMap(angulo, camaras[i].anguloInicial, camaras[i].anguloFinal, 0, 100);
 
+        cout << "El angulo calculado para " << i << " es de: " << angulo << "\n";
+        cout << "El valor de movimiento es " << valorDestino << "\n";
+        */
+        camaras[i].ultimaPosicion = ofRandom(0,100);
+        camaras[i].setPosicion(camaras[i].ultimaPosicion);
     }
+    cantClicks++;
+
 }
 
 //--------------------------------------------------------------

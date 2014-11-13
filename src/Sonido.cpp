@@ -1,13 +1,5 @@
 #include "Sonido.h"
 
-void Sonido::setup(){
-    base.loadSound("sonido/base.wav");
-    base.setVolume(0.75f);
-    base.setLoop(true);
-    base.play();
-    pitch  = 1;
-
-}
 
 void Sonido::actualizar(){
     ofSoundUpdate();
@@ -28,7 +20,11 @@ void Sonido::cambiarPitch(int gradoActual,int gradoAnterior){
 
 Sonido::Sonido()
 {
-    //ctor
+    base.loadSound("sonido/base.wav");
+    base.setVolume(0.75f);
+    base.setLoop(true);
+    base.play();
+    pitch  = 1;
 }
 
 Sonido::~Sonido()

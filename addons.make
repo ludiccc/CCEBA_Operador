@@ -1,3 +1,4 @@
+ofxOpenCv
 ofxOsc
 ofxSvg
 ofxXmlSettings
