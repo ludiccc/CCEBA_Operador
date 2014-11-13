@@ -1,3 +1,4 @@
 *.o
 obj/*
 operadorControl3.xcodeproj/*
+operadorControl3Debug.app/*
