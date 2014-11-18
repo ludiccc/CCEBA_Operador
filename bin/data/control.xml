@@ -12,7 +12,7 @@
         <ANGULOFINAL>85</ANGULOFINAL>
     </CAMARA0>
     <CAMARA1>
-        <IP>192.168.0.105</IP>
+        <IP>192.168.1.140</IP>
         <PORT>12346</PORT>
         <X>400</X>
         <Y>0</Y>
@@ -20,7 +20,7 @@
         <ANGULOFINAL>170</ANGULOFINAL>
     </CAMARA1>
     <CAMARA2>
-        <IP>192.168.0.104</IP>
+        <IP>192.168.1.138</IP>
         <PORT>12346</PORT>
         <X>0</X>
         <Y>300</Y>

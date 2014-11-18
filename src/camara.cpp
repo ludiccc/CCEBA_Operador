@@ -18,8 +18,9 @@ void Camara::setup(string _IP, int _port, int _x, int _y, int _anguloInicial, in
     anguloFinal = _anguloFinal;
 
     camaraRemota.setup(IP,port);
-    setPosicion(0);
-    ultimaPosicion = 0;
+
+    ultimaPosicion = ofRandom(0,100);
+    setPosicion(ultimaPosicion);
 }
 
 void Camara::setPosicion(int posicion) {

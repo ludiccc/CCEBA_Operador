@@ -3,6 +3,15 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    soundStream.listDevices();
+    int bufferSize = 256;
+    left.assign(bufferSize, 0.0);
+    soundStream.setup(this, 0, 2, 44100, bufferSize, 4);
+    tipografia_24.loadFont("fonts/Dekar.otf", 24);
+    tipografia_38.loadFont("fonts/Dekar.otf", 38);
+    tipografia_65.loadFont("fonts/Dekar.otf", 65);
+    
+
     if( XML.loadFile("control.xml") ){
         cout << "control.xml loaded!";
     }else{
@@ -64,7 +73,6 @@ void ofApp::setup(){
 	rangoTiempo = 1000;
 
 
-    areaDeClick.set(600,400,400,300);
     finder.setup("haarcascade_frontalface_default.xml");
 
     int camWidth 		= 640;	// try to grab at this size.
@@ -73,11 +81,26 @@ void ofApp::setup(){
     video.setVerbose(true);
     video.initGrabber(camWidth,camHeight);
     lastFrameFoundCara = false;
+    ofHideCursor();
+    
+    base.loadImage("base.jpg");
+    marcoOperador.loadImage("mini-marco-operador.png");
+    marcoCamaras.loadImage("marco-camaras.png");
+    
+    animacion1.setup();
+    animacion2.setup();
+    animacion3.setup();
+    animacion4.setup();
+
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    animacion1.update();
+    animacion2.update();
+    animacion3.update();
+    animacion4.update();
 
 
     sonido.actualizar();
@@ -226,7 +249,7 @@ void ofApp::update(){
             for (int i = 0; i < finder.blobs.size(); i++) {
                 lastFrameFoundCara = true;
                 ofRectangle cur = finder.blobs[i].boundingRect;
-                if (operadoresDetectados.size() >= 10) {
+                if (operadoresDetectados.size() >= 4) {
                     operadoresDetectados.erase(operadoresDetectados.begin());
                 }
                 
@@ -244,50 +267,70 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    ofSetColor(255,255,255);
+    base.draw(0,0);
+    
 	string buf;
-	buf = "listening for osc messages on port:" + ofToString(port);
-	ofDrawBitmapString(buf, 10, 20);
+	//buf = "listening for osc messages on port:" + ofToString(port);
+	//ofDrawBitmapString(buf, 10, 20);
     
     for (int i = 0; i < 4; i++) {
-        ofSetColor(128,128,128);
-        ofRect(10+(i%2)*170, 60+(i/2)*150,160,120);
-        ofDrawBitmapString("IP:"+camaras[i].IP,10+(i%2)*170, 50+(i/2)*150);
+        //ofSetColor(128,128,128);
+        //ofDrawBitmapString("IP:"+camaras[i].IP,259+(i%2)*370, 120+(i/2)*257);
         if(camaras[i].receivedImage.getWidth() > 0){
-            ofDrawBitmapString("Image:", 10, 160);
-            camaras[i].receivedImage.draw(10+(i%2)*170, 60+(i/2)*150);
+            ofSetColor(255,255,255);
+            camaras[i].receivedImage.draw(259+(i%2)*370, 120+(i/2)*257,370,257);
+            
+            //
+            ofPushMatrix();
+            float escala = 370.0/1024.0;
+            ofTranslate(259+(i%2)*370, 120+(i/2)*257);
+            ofScale(escala, escala);
+            if (i == 0) animacion1.draw();
+            else if (i == 1) animacion2.draw();
+            else if (i == 2) animacion3.draw();
+            else if (i == 3) animacion4.draw();
+
+            ofPopMatrix();
         }
     }
+    ofSetColor(255,255,255);
+    marcoCamaras.draw(259,120);
+    
+    ofPushMatrix();
+        buf = "";
+        int secs = (ofGetElapsedTimeMillis() - operandoTimer) / 1000;
+        int mins = secs/60;
+        buf = ofToString(mins) + ":" + ((secs%60)<10?"0":"") + ofToString(secs%60);
+    
+        ofTranslate(259, 200);
+        ofRotateZ(-45);
+        ofSetHexColor(0xcd205a);
+        tipografia_38.drawString(buf, 0, 0);
+    ofPopMatrix();
 
-	// draw mouse state
-	buf = "mouse: " + ofToString(mouseX, 4) +  " " + ofToString(mouseY, 4);
-	ofDrawBitmapString(buf, 430, 20);
-	ofDrawBitmapString(mouseButtonState, 580, 20);
-
-	ofDrawBitmapString("pitch: "+ ofToString(sonido.pitch),650,20);
 
 	for(int i = 0; i < NUM_MSG_STRINGS; i++){
 		ofDrawBitmapString(msg_strings[i], 10, 40 + 15 * i);
 	}
 
-    ofSetColor(128,128,128);
-    ofRect(areaDeClick);
-    for (int i = 0; i < 4; i++) {
-        ofSetColor(255, 128, 0);
-        int tmpX = camaras[i].x+areaDeClick.x;
-        int tmpY = camaras[i].y+areaDeClick.y;
-        ofRect(tmpX, tmpY, 10, 10);
+    ofSetColor(255,255,255);
 
-        ofSetColor(255,0,0);
-        // aqu’ habr’a que dibujar el ‡ngulo de visi—n...
-        ofLine(tmpX, tmpY, tmpX + cos(ofDegToRad(camaras[i].anguloInicial))*100, tmpY + sin(ofDegToRad(camaras[i].anguloInicial))*100);
-        ofSetColor(255,0,255);
-        // aqu’ habr’a que dibujar el ‡ngulo de visi—n...
-        ofLine(tmpX, tmpY, tmpX + cos(ofDegToRad(camaras[i].anguloFinal))*100, tmpY + sin(ofDegToRad(camaras[i].anguloFinal))*100);
-    }
     for (int i = 0; i < operadoresDetectados.size(); i++) {
-        operadoresDetectados[i].draw(10+(i%5)*45, 500+(i/5)*45, 50, 50);
+        operadoresDetectados[i].draw(45, 142*i+172, 134, 142);
+        marcoOperador.draw(41,142*i+172);
     }
+    
+    ofSetHexColor(0x49bffd);
+    ofSetLineWidth(3);
+    
+    ofBeginShape();
+    for (unsigned int i = 0; i < left.size(); i++){
+        ofVertex(ofMap(i, 0, 256, 0, ofGetWidth()), 710 -left[i]*380.0f);
+    }
+    ofEndShape(false);
+    
+
 }
 
 //--------------------------------------------------------------
@@ -308,6 +351,7 @@ void ofApp::keyPressed(int key){
 
     if (key=='a'){
         operando = true; //boton del sillon
+        operandoTimer = ofGetElapsedTimeMillis();
     }
 
 }
@@ -368,4 +412,15 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){
 
+}
+
+
+//--------------------------------------------------------------
+void ofApp::audioIn(float * input, int bufferSize, int nChannels){
+    //lets go through each sample and calculate the root mean square which is a rough way to calculate volume
+    for (int i = 0; i < bufferSize; i++){
+        left[i]		= input[i*2]*0.5;
+    }
+    
+    
 }

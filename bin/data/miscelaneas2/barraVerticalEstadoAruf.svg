@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="184.375px" height="204px" viewBox="0 0 184.375 204" style="enable-background:new 0 0 184.375 204;" xml:space="preserve"
+	>
+<g>
+	<g>
+		<g>
+			<g>
+				<g>
+					<polyline style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" points="82.84,3.32 62.71,3.32 62.71,151.559 82.84,151.559 
+											"/>
+					<g>
+						<path style="fill:#E9215C;" d="M84.671,151.559c0,1.008-0.82,1.828-1.831,1.828c-1.01,0-1.83-0.82-1.83-1.828
+							c0-1.015,0.82-1.832,1.83-1.832C83.851,149.727,84.671,150.544,84.671,151.559z"/>
+						<path style="fill:none;stroke:#EA1D5B;stroke-width:0.236;stroke-miterlimit:10;" d="M85.815,151.559
+							c0,1.643-1.331,2.973-2.975,2.973c-1.643,0-2.974-1.33-2.974-2.973c0-1.646,1.331-2.978,2.974-2.978
+							C84.484,148.582,85.815,149.914,85.815,151.559z"/>
+					</g>
+					<g>
+						<circle style="fill:#E9215C;" cx="82.841" cy="3.32" r="1.831"/>
+						<circle style="fill:none;stroke:#EA1D5B;stroke-width:0.236;stroke-miterlimit:10;" cx="82.841" cy="3.32" r="2.974"/>
+					</g>
+				</g>
+				<g>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="10.638" x2="65.76" y2="10.638"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="18.989" x2="65.76" y2="18.989"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="27.338" x2="65.76" y2="27.338"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="35.688" x2="65.76" y2="35.688"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="44.039" x2="65.76" y2="44.039"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="52.389" x2="65.76" y2="52.389"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="60.739" x2="65.76" y2="60.739"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="69.088" x2="65.76" y2="69.088"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="77.439" x2="65.76" y2="77.439"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="85.79" x2="65.76" y2="85.79"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="94.139" x2="65.76" y2="94.139"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="102.489" x2="65.76" y2="102.489"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="110.839" x2="65.76" y2="110.839"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="119.189" x2="65.76" y2="119.189"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="127.54" x2="65.76" y2="127.54"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="72.776" y1="135.889" x2="65.76" y2="135.889"/>
+					<line style="fill:none;stroke:#EA1D5B;stroke-miterlimit:10;" x1="65.76" y1="144.24" x2="72.776" y2="144.24"/>
+				</g>
+			</g>
+		</g>
+		<g>
+			<text transform="matrix(1.0457 0 0 1 0.0811 197.0518)" style="fill:#EA1D5B; font-family:'Dekar'; font-size:30;">ESTADO ARUMF</text>
+		</g>
+		<g>
+			<text transform="matrix(1.0457 0 0 1 0.0811 21.3643)" style="fill:#E9215C; font-family:'Dekar'; font-size:16.9551;">ALTO</text>
+			<text transform="matrix(1.0457 0 0 1 0.0811 85.3643)" style="fill:#E9215C; font-family:'Dekar'; font-size:16.9551;">MEDIO</text>
+			<text transform="matrix(1.0457 0 0 1 0.0811 149.3643)" style="fill:#E9215C; font-family:'Dekar'; font-size:16.9551;">BAJO</text>
+		</g>
+	</g>
+</g>
+</svg>
