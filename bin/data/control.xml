@@ -4,7 +4,7 @@
 <ANIMACION>1</ANIMACION>
 <CAMARAS>
     <CAMARA0>
-        <IP>127.0.0.1</IP>
+        <IP>192.168.0.104</IP>
         <PORT>12346</PORT>
         <X>0</X>
         <Y>0</Y>
@@ -12,7 +12,7 @@
         <ANGULOFINAL>85</ANGULOFINAL>
     </CAMARA0>
     <CAMARA1>
-        <IP>192.168.1.140</IP>
+        <IP>192.168.0.105</IP>
         <PORT>12346</PORT>
         <X>400</X>
         <Y>0</Y>

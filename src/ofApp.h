@@ -109,5 +109,13 @@ class ofApp : public ofBaseApp {
     Animacion2 animacion2;
     Animacion3 animacion3;
     Animacion4 animacion4;
+    
+    //Animacion Apertura y Cierre de pantalla del operador
+    ofImage fondoEscudoLeft;
+    ofImage fondoRight;
+    bool abrir;
+    bool movimientoOn;
+    float counter;
+    
 
 };

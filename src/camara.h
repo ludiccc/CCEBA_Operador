@@ -24,6 +24,7 @@ public:
     string IP;
     int port;
     int ultimaPosicion;
+    int animacion;
     
     ofImage receivedImage;
     

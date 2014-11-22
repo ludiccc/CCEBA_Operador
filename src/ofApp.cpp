@@ -91,6 +91,13 @@ void ofApp::setup(){
     animacion2.setup();
     animacion3.setup();
     animacion4.setup();
+    //Animacion Apertura y Cierre de pantalla del operador
+    counter=0;
+    abrir=false;
+    movimientoOn=false;
+    fondoEscudoLeft.loadImage("bgEscudoLeft.png");
+    fondoRight.loadImage("bgRight.png");
+
 
 
 }
@@ -101,9 +108,27 @@ void ofApp::update(){
     animacion2.update();
     animacion3.update();
     animacion4.update();
+    
+    //Animacion Apertura y Cierre de pantalla del operador
+    if (abrir){
+        if(movimientoOn){
+            counter= counter+100;
+            if(counter > ofGetWidth()/2 + fondoEscudoLeft.getWidth()/2 )  movimientoOn=false;
+        }
+    }else{
+        if(movimientoOn){
+            counter= counter-200;
+            if(counter <= 0 ) {
+                counter=0;
+                movimientoOn=false;
+            }
+        }
+    }
+    //---- end Animacion Apertura
 
 
     sonido.actualizar();
+    
 
     //---------------ESTADO OPERADOR OPERANDO---------------
     if (estadoOperador==STANDBY){
@@ -182,11 +207,16 @@ void ofApp::update(){
 		}
         // check for an image being sent (note: the size of the image depends greatly on your network buffer sizes - if an image is too big the message won't come through )
         else if(m.getAddress() == "/image" ){
-            //cout << "recibida una imagen de " << m.getRemoteIp() << "\n";
-            ofBuffer buffer = m.getArgAsBlob(0);
+            cout << "recibida una imagen de " << m.getRemoteIp() << " quien tiene animacion numero:" << m.getArgAsInt32(0) << "\n";
+            //OPofBuffer buffer = m.getArgAsBlob(0);
             for (int i = 0; i < 4; i++) {
                 if (m.getRemoteIp() == camaras[i].IP) {
-                    camaras[i].receivedImage.loadImage(buffer);
+                    camaras[i].animacion = m.getArgAsInt32(0);
+                    //OPcamaras[i].receivedImage.loadImage(buffer);
+                    ofImage newImg;
+                    newImg.loadImage("http://"+camaras[i].IP+"/rpicam/lastscrenshot.png");
+                    if (newImg.width > 0) camaras[i].receivedImage = newImg;
+                    
                     break;
                 }
                 
@@ -286,10 +316,10 @@ void ofApp::draw(){
             float escala = 370.0/1024.0;
             ofTranslate(259+(i%2)*370, 120+(i/2)*257);
             ofScale(escala, escala);
-            if (i == 0) animacion1.draw();
-            else if (i == 1) animacion2.draw();
-            else if (i == 2) animacion3.draw();
-            else if (i == 3) animacion4.draw();
+            if (camaras[i].animacion == 0) animacion1.draw();
+            else if (camaras[i].animacion == 1) animacion2.draw();
+            else if (camaras[i].animacion == 2) animacion3.draw();
+            else if (camaras[i].animacion == 3) animacion4.draw();
 
             ofPopMatrix();
         }
@@ -320,15 +350,19 @@ void ofApp::draw(){
         operadoresDetectados[i].draw(45, 142*i+172, 134, 142);
         marcoOperador.draw(41,142*i+172);
     }
-    
-    ofSetHexColor(0x49bffd);
-    ofSetLineWidth(3);
-    
-    ofBeginShape();
-    for (unsigned int i = 0; i < left.size(); i++){
-        ofVertex(ofMap(i, 0, 256, 0, ofGetWidth()), 710 -left[i]*380.0f);
-    }
-    ofEndShape(false);
+    ofPushStyle();
+        ofSetHexColor(0x49bffd);
+        ofSetLineWidth(3);
+        
+        ofBeginShape();
+        for (unsigned int i = 0; i < left.size(); i++){
+            ofVertex(ofMap(i, 0, 256, 0, ofGetWidth()), 710 -left[i]*380.0f);
+        }
+        ofEndShape(false);
+    ofPopStyle();
+    //Dibujo Animacion Apertura y Cierre de pantalla del operador
+    fondoRight.draw(ofGetWidth()/2 + counter,0);
+    fondoEscudoLeft.draw(0 - counter,0);
     
 
 }
@@ -352,6 +386,12 @@ void ofApp::keyPressed(int key){
     if (key=='a'){
         operando = true; //boton del sillon
         operandoTimer = ofGetElapsedTimeMillis();
+        //Animacion Apertura y Cierre de pantalla del operador
+        if(!movimientoOn){
+            abrir= !abrir;
+            movimientoOn=!movimientoOn;
+        }
+
     }
 
 }
