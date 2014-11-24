@@ -48,6 +48,7 @@ class ofApp : public ofBaseApp {
     
 		ofTrueTypeFont font;
 		ofxOscReceiver receiver;
+    unsigned int nextFindCaras;
 
     int port;
     string destIP;

@@ -71,6 +71,8 @@ void ofApp::setup(){
 	estadoOperador = STANDBY;
 
 	rangoTiempo = 1000;
+    
+    nextFindCaras = 0;
 
 
     finder.setup("haarcascade_frontalface_default.xml");
@@ -110,20 +112,45 @@ void ofApp::update(){
     animacion4.update();
     
     //Animacion Apertura y Cierre de pantalla del operador
+    //condicional para cerrar
+    if( ofGetKeyPressed('s' )){
+        if (!operando) {
+            operando = true; //boton del sillon
+            operandoTimer = ofGetElapsedTimeMillis();
+        }
+        //Animacion Apertura y Cierre de pantalla del operador
+        if(!movimientoOn){
+            abrir= true;
+            movimientoOn=!movimientoOn;
+        }
+        
+    } else {
+        operando = false;
+        abrir= false;
+        if (!movimientoOn) movimientoOn=true;
+        
+    }
+
+    // end condicional para cerrar
+
     if (abrir){
         if(movimientoOn){
-            counter= counter+100;
-            if(counter > ofGetWidth()/2 + fondoEscudoLeft.getWidth()/2 )  movimientoOn=false;
+            counter= counter+10;
+            if(counter > ofGetWidth()/2 + fondoEscudoLeft.getWidth()/2 ) {
+              movimientoOn=false;
+                counter = ofGetWidth()/2 + fondoEscudoLeft.getWidth()/2;
+            }
         }
     }else{
         if(movimientoOn){
-            counter= counter-200;
+            counter= counter-20;
             if(counter <= 0 ) {
                 counter=0;
                 movimientoOn=false;
             }
         }
     }
+    
     //---- end Animacion Apertura
 
 
@@ -257,6 +284,7 @@ void ofApp::update(){
 	}
     
     video.update();
+    //reconocimiento de cara
     if (video.isFrameNew()){
         
         ofxCvColorImage colorImg;
@@ -270,25 +298,28 @@ void ofApp::update(){
          for (int i = 0; i < totalPixels; i++){
          pixelsDest[i] = pixels[i];
          }*/
-        finder.findHaarObjects(grayImage, 80, 80);
-        
-        if (lastFrameFoundCara && finder.blobs.size() == 0) {
-            lastFrameFoundCara = false;
-        }
-        if (!lastFrameFoundCara) {
-            for (int i = 0; i < finder.blobs.size(); i++) {
-                lastFrameFoundCara = true;
-                ofRectangle cur = finder.blobs[i].boundingRect;
-                if (operadoresDetectados.size() >= 4) {
-                    operadoresDetectados.erase(operadoresDetectados.begin());
+        if (nextFindCaras < ofGetElapsedTimeMillis()) {
+            nextFindCaras = ofGetElapsedTimeMillis() + 1000;
+            finder.findHaarObjects(grayImage, 80, 80);
+            
+            if (lastFrameFoundCara && finder.blobs.size() == 0) {
+                lastFrameFoundCara = false;
+            }
+            if (!lastFrameFoundCara) {
+                for (int i = 0; i < finder.blobs.size(); i++) {
+                    lastFrameFoundCara = true;
+                    ofRectangle cur = finder.blobs[i].boundingRect;
+                    if (operadoresDetectados.size() >= 4) {
+                        operadoresDetectados.erase(operadoresDetectados.begin());
+                    }
+                    
+                    ofImage cara;
+                    
+                    cara.setFromPixels(video.getPixelsRef());
+                    cara.crop(cur.x, cur.y, cur.width, cur.height);
+                    
+                    operadoresDetectados.push_back(cara);
                 }
-                
-                ofImage cara;
-                
-                cara.setFromPixels(video.getPixelsRef());
-                cara.crop(cur.x, cur.y, cur.width, cur.height);
-                
-                operadoresDetectados.push_back(cara);
             }
         }
     }
@@ -364,6 +395,7 @@ void ofApp::draw(){
     fondoRight.draw(ofGetWidth()/2 + counter,0);
     fondoEscudoLeft.draw(0 - counter,0);
     
+    
 
 }
 
@@ -383,7 +415,7 @@ void ofApp::keyPressed(int key){
         }
     }
 
-    if (key=='a'){
+    /*if (key=='a'){
         operando = true; //boton del sillon
         operandoTimer = ofGetElapsedTimeMillis();
         //Animacion Apertura y Cierre de pantalla del operador
@@ -392,7 +424,7 @@ void ofApp::keyPressed(int key){
             movimientoOn=!movimientoOn;
         }
 
-    }
+    }*/
 
 }
 

@@ -266,12 +266,13 @@ void Animacion::draw(){
     //regionesculturales
     ofPushMatrix();
     ofTranslate( margen*2, regionesCulturales.getHeight() );
-     if (ofGetFrameNum()/50%2) {
+    // comentar esta parte para evitar problemas con el svg de regiones culturales
+    /* if (ofGetFrameNum()/50%2) {
          ofColor c(2234, 29, 91);
          regionesCulturales.getPathAt(35).setColor(c);
      } else {
          regionesCulturales.getPathAt(35).setColor(255);
-     }
+     }*/
     ofSetColor(234, 29, 91);
     regionesCulturales.draw();
     //ofMap(mouseX, 0, ofGetWidth(), 0, 360)
