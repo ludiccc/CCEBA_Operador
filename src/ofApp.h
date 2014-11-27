@@ -41,11 +41,11 @@ class ofApp : public ofBaseApp {
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-    
+
     void audioIn(float * input, int bufferSize, int nChannels);
     ofSoundStream soundStream;
     vector <float> left;
-    
+
 		ofTrueTypeFont font;
 		ofxOscReceiver receiver;
     unsigned int nextFindCaras;
@@ -54,15 +54,17 @@ class ofApp : public ofBaseApp {
     string destIP;
     int destPort;
 
+    bool saveNextCara;
+
     Camara camaras[4];
-    
+
     ofVideoGrabber video;
-    
+
     ofxCvGrayscaleImage grayImage;
     ofxCvHaarFinder finder;
     vector <ofImage> operadoresDetectados;
-    
-    
+
+
     bool lastFrameFoundCara;
 
 
@@ -96,7 +98,7 @@ class ofApp : public ofBaseApp {
 		int mouseX, mouseY;
 		string mouseButtonState;
 
-        
+
     // Interfaz
     ofImage base;
     ofImage marcoOperador;
@@ -110,13 +112,13 @@ class ofApp : public ofBaseApp {
     Animacion2 animacion2;
     Animacion3 animacion3;
     Animacion4 animacion4;
-    
+
     //Animacion Apertura y Cierre de pantalla del operador
     ofImage fondoEscudoLeft;
     ofImage fondoRight;
     bool abrir;
     bool movimientoOn;
     float counter;
-    
+
 
 };

@@ -10,7 +10,7 @@ void ofApp::setup(){
     tipografia_24.loadFont("fonts/Dekar.otf", 24);
     tipografia_38.loadFont("fonts/Dekar.otf", 38);
     tipografia_65.loadFont("fonts/Dekar.otf", 65);
-    
+
 
     if( XML.loadFile("control.xml") ){
         cout << "control.xml loaded!";
@@ -61,6 +61,8 @@ void ofApp::setup(){
 	receiver.setup(port);
 
 
+    saveNextCara = false;
+
 	current_msg_string = 0;
 	mouseX = 0;
 	mouseY = 0;
@@ -71,24 +73,24 @@ void ofApp::setup(){
 	estadoOperador = STANDBY;
 
 	rangoTiempo = 1000;
-    
+
     nextFindCaras = 0;
 
 
-    finder.setup("haarcascade_frontalface_default.xml");
+    //finder.setup("haarcascade_frontalface_default.xml");
 
     int camWidth 		= 640;	// try to grab at this size.
     int camHeight 		= 480;
-    
+
     video.setVerbose(true);
     video.initGrabber(camWidth,camHeight);
     lastFrameFoundCara = false;
     ofHideCursor();
-    
+
     base.loadImage("base.jpg");
     marcoOperador.loadImage("mini-marco-operador.png");
     marcoCamaras.loadImage("marco-camaras.png");
-    
+
     animacion1.setup();
     animacion2.setup();
     animacion3.setup();
@@ -110,26 +112,10 @@ void ofApp::update(){
     animacion2.update();
     animacion3.update();
     animacion4.update();
-    
+
     //Animacion Apertura y Cierre de pantalla del operador
     //condicional para cerrar
-    if( ofGetKeyPressed('s' )){
-        if (!operando) {
-            operando = true; //boton del sillon
-            operandoTimer = ofGetElapsedTimeMillis();
-        }
-        //Animacion Apertura y Cierre de pantalla del operador
-        if(!movimientoOn){
-            abrir= true;
-            movimientoOn=!movimientoOn;
-        }
-        
-    } else {
-        operando = false;
-        abrir= false;
-        if (!movimientoOn) movimientoOn=true;
-        
-    }
+
 
     // end condicional para cerrar
 
@@ -150,12 +136,12 @@ void ofApp::update(){
             }
         }
     }
-    
+
     //---- end Animacion Apertura
 
 
     sonido.actualizar();
-    
+
 
     //---------------ESTADO OPERADOR OPERANDO---------------
     if (estadoOperador==STANDBY){
@@ -243,10 +229,10 @@ void ofApp::update(){
                     ofImage newImg;
                     newImg.loadImage("http://"+camaras[i].IP+"/rpicam/lastscrenshot.png");
                     if (newImg.width > 0) camaras[i].receivedImage = newImg;
-                    
+
                     break;
                 }
-                
+
             }
             //receivedImage.loadImage(buffer);
         }
@@ -282,15 +268,27 @@ void ofApp::update(){
 		}
 
 	}
-    
+
     video.update();
     //reconocimiento de cara
     if (video.isFrameNew()){
-        
+            if (saveNextCara){
+                saveNextCara = false;
+                if (operadoresDetectados.size() >= 4) {
+                    operadoresDetectados.erase(operadoresDetectados.begin());
+                }
+                ofImage cara;
+
+                cara.setFromPixels(video.getPixelsRef());
+                    //cara.crop(cur.x, cur.y, cur.width, cur.height);
+
+                operadoresDetectados.push_back(cara);
+            }
+        /*
         ofxCvColorImage colorImg;
         colorImg.allocate(video.width,video.height);
         colorImg.setFromPixels(video.getPixelsRef());
-        grayImage = colorImg;
+        grayImage = colorImg;*/
         /*
          int totalPixels = camWidth*camHeight*3;
          unsigned char * pixels = vidGrabber.getPixels();
@@ -298,10 +296,10 @@ void ofApp::update(){
          for (int i = 0; i < totalPixels; i++){
          pixelsDest[i] = pixels[i];
          }*/
-        if (nextFindCaras < ofGetElapsedTimeMillis()) {
+        /*if (nextFindCaras < ofGetElapsedTimeMillis()) {
             nextFindCaras = ofGetElapsedTimeMillis() + 1000;
             finder.findHaarObjects(grayImage, 80, 80);
-            
+
             if (lastFrameFoundCara && finder.blobs.size() == 0) {
                 lastFrameFoundCara = false;
             }
@@ -312,16 +310,16 @@ void ofApp::update(){
                     if (operadoresDetectados.size() >= 4) {
                         operadoresDetectados.erase(operadoresDetectados.begin());
                     }
-                    
+
                     ofImage cara;
-                    
+
                     cara.setFromPixels(video.getPixelsRef());
                     cara.crop(cur.x, cur.y, cur.width, cur.height);
-                    
+
                     operadoresDetectados.push_back(cara);
                 }
             }
-        }
+        }*/
     }
 }
 
@@ -330,18 +328,18 @@ void ofApp::update(){
 void ofApp::draw(){
     ofSetColor(255,255,255);
     base.draw(0,0);
-    
+
 	string buf;
 	//buf = "listening for osc messages on port:" + ofToString(port);
 	//ofDrawBitmapString(buf, 10, 20);
-    
+
     for (int i = 0; i < 4; i++) {
         //ofSetColor(128,128,128);
         //ofDrawBitmapString("IP:"+camaras[i].IP,259+(i%2)*370, 120+(i/2)*257);
         if(camaras[i].receivedImage.getWidth() > 0){
             ofSetColor(255,255,255);
             camaras[i].receivedImage.draw(259+(i%2)*370, 120+(i/2)*257,370,257);
-            
+
             //
             ofPushMatrix();
             float escala = 370.0/1024.0;
@@ -357,13 +355,13 @@ void ofApp::draw(){
     }
     ofSetColor(255,255,255);
     marcoCamaras.draw(259,120);
-    
+
     ofPushMatrix();
         buf = "";
         int secs = (ofGetElapsedTimeMillis() - operandoTimer) / 1000;
         int mins = secs/60;
         buf = ofToString(mins) + ":" + ((secs%60)<10?"0":"") + ofToString(secs%60);
-    
+
         ofTranslate(259, 200);
         ofRotateZ(-45);
         ofSetHexColor(0xcd205a);
@@ -384,7 +382,7 @@ void ofApp::draw(){
     ofPushStyle();
         ofSetHexColor(0x49bffd);
         ofSetLineWidth(3);
-        
+
         ofBeginShape();
         for (unsigned int i = 0; i < left.size(); i++){
             ofVertex(ofMap(i, 0, 256, 0, ofGetWidth()), 710 -left[i]*380.0f);
@@ -394,8 +392,8 @@ void ofApp::draw(){
     //Dibujo Animacion Apertura y Cierre de pantalla del operador
     fondoRight.draw(ofGetWidth()/2 + counter,0);
     fondoEscudoLeft.draw(0 - counter,0);
-    
-    
+
+
 
 }
 
@@ -415,6 +413,21 @@ void ofApp::keyPressed(int key){
         }
     }
 
+
+    if( key == 's' ){
+        
+        if (!operando) {
+            operando = true; //boton del sillon
+            operandoTimer = ofGetElapsedTimeMillis();
+        }
+        //Animacion Apertura y Cierre de pantalla del operador
+        if(!movimientoOn){
+            saveNextCara = true;
+            abrir= true;
+            movimientoOn=!movimientoOn;
+        }
+
+    }
     /*if (key=='a'){
         operando = true; //boton del sillon
         operandoTimer = ofGetElapsedTimeMillis();
@@ -430,9 +443,12 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    if (key=='a'){
+    if (key=='s'){
         operando = false;
-    }
+        abrir= false;
+        if (!movimientoOn) movimientoOn=true;
+
+       }
 }
 
 //--------------------------------------------------------------
@@ -452,7 +468,7 @@ void ofApp::mousePressed(int x, int y, int button){
         /*
         if (x-camaras[i].x == 0) continue; // me evito el problema de dominio
         int angulo = ofRadToDeg(atan2(y-camaras[i].y,x-camaras[i].x))+camaras[i].anguloInicial;
-        
+
 
         int valorDestino = ofMap(angulo, camaras[i].anguloInicial, camaras[i].anguloFinal, 0, 100);
 
@@ -493,6 +509,6 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
     for (int i = 0; i < bufferSize; i++){
         left[i]		= input[i*2]*0.5;
     }
-    
-    
+
+
 }

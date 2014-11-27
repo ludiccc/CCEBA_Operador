@@ -12,7 +12,7 @@ void Animacion::setup(){
     margen=10;
     circuloConPuntos.load("miscelaneas/ciruloConPuntos.svg");
     ciruloCategorias.load("miscelaneas/ciruloConPuntosMed.svg");
-    
+
     ofTrueTypeFont::setGlobalDpi(72);
     tipografia_65.loadFont("fonts/Dekar.otf", 65);
     tipografia_36.loadFont("fonts/Dekar.otf", 36);
@@ -22,15 +22,15 @@ void Animacion::setup(){
     barraAmarilla.loadImage("miscelaneas/barraAmarilla.png");
     //barraHorizontal
     barraHorizontal.load("miscelaneas/barraHorizontal.svg");
-    
+
     //barra lateral tipitos
     barraLateralVisitantes.load("miscelaneas/barraLateralVisitantes.svg");
     dato_regionesCulturales=89;
-    
+
     textoOutput="";
-    
+
     //regiones culturales
-    regionesCulturales.load("miscelaneas/regionesCulturales.svg");
+    regionesCulturales.load("miscelaneas/barraLateralVisitantes.svg");
     textoQueCorre[0]="A";
     textoQueCorre[1]="B";
     textoQueCorre[2]="C";
@@ -53,10 +53,10 @@ void Animacion::setup(){
     regiones[2] = "C1hen0\ntr af74r EE#5";
     regiones[3] = "8ef5a\n33 abdD444";
     regiones[4] = "TR45esa\nFF 000 FFF";
-    
+
     datoTipitos=0;
     valorVisitantes=0;
-    
+
    }
 
 void Animacion::update(){
@@ -64,20 +64,20 @@ void Animacion::update(){
     if (ofGetFrameNum()/160%2) {
        valorVisitantes = valorVisitantes + int(ofRandom(0, 3));
     }
-    
+
     datoVisitantes = ofToString(valorVisitantes);
     //datoVisitantesHeight = 50;
-    
+
     //dato2 = ofRandom(0, 10);
-    
+
     /*===== TIPO DE VISITANTE =======*/
     cantidadTipoDeIndividuo = 0;
-    
+
     datoTipoDeVisitante1 = ofNoise(ofRandom(0, 10)) ;
     datoTipoDeVisitante2 = ofNoise(ofRandom(0, 10)) ;
     datoTipoDeVisitante3 = ofNoise(ofRandom(0, 10)) ;
     datoTipoDeVisitante4 = ofNoise(ofRandom(0, 10)) ;
-    
+
     if (ofGetFrameNum()/80%2) {
         valorAlfa = ofMap(ofNoise(ofRandom(0, 10)) , 0, 1, 0, 100);
     } else{
@@ -86,13 +86,13 @@ void Animacion::update(){
     if (ofGetFrameNum()/50%2) {
     valorGama = ofMap(ofNoise(ofRandom(0, 10)) , 0, 1, 0, 100);
     }
-    
+
     datocategoriaAlafa = ofToString(valorAlfa );
     datocategoriaBeta = ofToString(valorBeta);
     datocategoriaGama = ofToString(valorGama);
-    
+
     /*===== REGIONES CULTURALES=======*/
-   
+
     if (ofGetFrameNum()/50%2) {
         dato_regionesCulturales++;
         regionesTexto = regiones[int(ofRandom(0, 5))];
@@ -100,17 +100,17 @@ void Animacion::update(){
     if (dato_regionesCulturales>100000) {
         dato_regionesCulturales=50;
     }
-    
-    
+
+
     /*===== DATOS TIPITOS ========*/
-    
+
     if (ofGetFrameNum()/50%2) {
        datoTipitos = datoTipitos + ofRandom(-2, 4);
         if(datoTipitos>1023) datoTipitos = 50;
         if(datoTipitos<10) datoTipitos = 20;
     }
     textoTipitos = ofToString( datoTipitos );
-    
+
     /*=== TEXTO QUE CORRE */
      if (ofGetFrameNum()/50%2) {
         textoOutput = "";
@@ -125,7 +125,7 @@ void Animacion::update(){
             textoOutput = textoOutput + "\n";
         }
      }
-  
+
 }
 
 void Animacion::draw(){
@@ -134,16 +134,16 @@ void Animacion::draw(){
     ofSetColor(241, 233, 18,100);
     ofFill();
     tipografia_09.drawString(textoOutput, 20, 20);
-    
-   
+
+
     /*===============================================================================*/
     //barraAmarilla
     barraAmarilla.draw(ofGetWidth()/4 , ofGetHeight() - barraAmarilla.getHeight());
-    
+
     /*===== CANTIDAD DE INDIVIDUOS ===========================================================*/
-    
+
     ofPushMatrix();
-    
+
     //posicion circulo
 	ofTranslate(ofGetWidth() / 4 + margen , ofGetHeight()  - circuloConPuntos.getHeight() - tipografia_36.stringWidth("09#af#FC00")/2 - margen);
     //ofRotate( ofMap(mouseX, 0, ofGetWidth(), 0, 360) );
@@ -152,9 +152,9 @@ void Animacion::draw(){
     circuloConPuntos.draw();
     //titulo del circulo
     tipografia_36.drawString( "09#af#FC00", circuloConPuntos.getWidth()/2 - tipografia_36.stringWidth("INDIVIDUOS")/2 , circuloConPuntos.getHeight() + tipografia_36.stringHeight("INDIVIDUOS") );
-    
+
     ofPopMatrix();
-    
+
     /*===== CATEGORIA DE INDIVIDUOS ===========================================================*/
     //------------ Alfa ----------------------
     ofPushMatrix();
@@ -168,7 +168,7 @@ void Animacion::draw(){
     ciruloCategorias.draw();
     //titulo del circulo
     tipografia_18.drawString( "FVMfsggt¿ AtF4", ciruloCategorias.getWidth()/2 - tipografia_18.stringWidth("CATEGORIA AtF4")/2 , ciruloCategorias.getHeight() + tipografia_18.stringHeight("FVMfsggt¿ AtF4") +margen);
-    
+
     ofPopMatrix();
     //------------ Beta ----------------------
     ofPushMatrix();
@@ -182,7 +182,7 @@ void Animacion::draw(){
     ciruloCategorias.draw();
     //titulo del circulo
     tipografia_18.drawString( "FVMfsggt¿ B3T7", ciruloCategorias.getWidth()/2 - tipografia_18.stringWidth("FVMfsggt¿ B3T7")/2 , ciruloCategorias.getHeight() + tipografia_18.stringHeight("FVMfsggt¿ B3T7") +margen);
-    
+
     ofPopMatrix();
     //------------ Gama ----------------------
     ofPushMatrix();
@@ -196,10 +196,10 @@ void Animacion::draw(){
     ciruloCategorias.draw();
     //titulo del circulo
     tipografia_18.drawString( "FVMfsggt¿ Gh60", ciruloCategorias.getWidth()/2 - tipografia_18.stringWidth("FVMfsggt¿ Gh60")/2 , ciruloCategorias.getHeight() + tipografia_18.stringHeight("FVMfsggt¿ Gh60") +margen);
-    
+
     ofPopMatrix();
-    
-    
+
+
     /*===== TIPO DE VISITANTE ===========================================================*/
     //BARRA 1
     //barraHorizontal
@@ -215,7 +215,7 @@ void Animacion::draw(){
     ofPopMatrix();
     cantidadTipoDeIndividuo++;
     /*------------------------------*/
-    
+
     //BARRA 2
     //barraHorizontal
     ofPushMatrix();
@@ -258,11 +258,11 @@ void Animacion::draw(){
     ofPopMatrix();
     cantidadTipoDeIndividuo++;
     /*------------------------------*/
-    
 
-    /*===============================================================================*/   
-    
-    
+
+    /*===============================================================================*/
+
+
     //regionesculturales
     ofPushMatrix();
     ofTranslate( margen*2, regionesCulturales.getHeight() );
@@ -279,11 +279,11 @@ void Animacion::draw(){
     tipografia_36.setLineHeight(36);
     tipografia_36.drawString(regionesTexto, 10, 120);
     tipografia_36.drawString( ofToString(dato_regionesCulturales), 0 + margen, 0);
-    
+
     ofPopMatrix();
-    
+
     /*=============== BARRA TIPITOS ========================*/
-    
+
     ofPushMatrix();
 	ofTranslate(ofGetWidth() - barraLateralVisitantes.getWidth() - margen , barraLateralVisitantes.getHeight()/2 );
     ofPushStyle();
@@ -291,19 +291,19 @@ void Animacion::draw(){
     ofRect(5, barraLateralVisitantes.getHeight() - 15, ofMap( datoTipitos,0,1024,0,barraLateralVisitantes.getWidth() - margen) , 10);
     ofPopStyle();
     barraLateralVisitantes.draw();
-    
-    
+
+
     tipografia_18.drawString(textoTipitos, barraLateralVisitantes.getWidth() - tipografia_18.stringWidth(textoTipitos) - margen , 10);
-    
+
     ofPopMatrix();
     ofPopStyle();
-    
-    
-    
 
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
 }
